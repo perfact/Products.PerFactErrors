@@ -7,7 +7,7 @@ This package provides a basic implementation of error views for Zope 4.
 NotFound
 ========
 
-The is a template in ``Products.PerfactErrors.notfound.pt`` which is rendered
+The is a template in ``Products.PerFactErrors.notfound.pt`` which is rendered
 in case of a HTTP-404.
 
 Unauthorized / Forbidden
