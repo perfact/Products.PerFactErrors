@@ -1,6 +1,8 @@
+import ZPublisher.interfaces
 import logging
 import zExceptions
 import zope.cachedescriptors.property
+import zope.component
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +23,13 @@ class RedirectView(object):
         raise zExceptions.Redirect(base_url)
 
 
+class DummyView(object):
+    """We need this view to prohibit the re-raise of exceptions."""
+
+    def __call__(self,):
+        """Provide dummy callable."""
+
+
 class LoggingView(object):
     """Log the error and traceback."""
 
@@ -33,11 +42,18 @@ class LoggingView(object):
     def uuid(self):
         return uuid4()
 
-    def __call__(self):
+    def __call__(self, request=None):
         """Log the error and render standard error message."""
-        if isinstance(self.context, zExceptions.NotFound):
-            raise self.context
+        if request is not None:
+            self.request = request
         self.log_traceback()
         root = self.request['PARENTS'][-1]
         std_err_mess = root.standard_error_message_show
         return std_err_mess(uuid=self.uuid)
+
+
+@zope.component.adapter(ZPublisher.interfaces.IPubFailure)
+def log_and_render_error_message(event):
+    """Combine logging and rendering"""
+    view = LoggingView()
+    event.request.response.setBody(view(request=event.request))

@@ -25,8 +25,10 @@
   <browser:page for="zope.interface.common.interfaces.IException"
                 layer="zope.publisher.interfaces.browser.IBrowserRequest"
                 name="index.html"
-                class=".errors.LoggingView"
+                class=".errors.DummyView"
                 permission="zope.Public">
   </browser:page>
+
+  <subscriber handler=".errors.log_and_render_error_message" />
 
 </configure>
