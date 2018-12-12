@@ -1,6 +1,7 @@
 import OFS.interfaces
 import ZPublisher.interfaces
 import logging
+import transaction
 import zExceptions
 import zope.cachedescriptors.property
 import zope.component
@@ -75,8 +76,12 @@ class LoggingView(object):
             self.request = request
         self.log_traceback()
         root = self.request['PARENTS'][-1]
+        if not hasattr(root, 'standard_error_message_show'):
+            return ''
         std_err_mess = root.standard_error_message_show
-        return std_err_mess(uuid=self.uuid)
+        result = std_err_mess(uuid=self.uuid)
+        transaction.commit()
+        return result
 
 
 @zope.component.adapter(ZPublisher.interfaces.IPubFailure)
