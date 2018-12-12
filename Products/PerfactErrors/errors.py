@@ -1,3 +1,4 @@
+import OFS.interfaces
 import ZPublisher.interfaces
 import logging
 import zExceptions
@@ -21,6 +22,32 @@ class RedirectView(object):
         log.warn('Redirecting to root')
         base_url = self.request.base
         raise zExceptions.Redirect(base_url)
+
+
+class UnauthorizedRedirectView(RedirectView):
+    """Redirects except for ZMI toplevel."""
+
+    @property
+    def no_redirect(self):
+        """Do not redirect at toplevel for manage and manage_main.
+
+        This allows to login via basic auth for managers.
+        """
+        auth_methods = ['manage', 'manage_main']
+
+        is_toplevel = OFS.interfaces.IApplication.providedBy(self.__parent__)
+        if is_toplevel:
+            # Last component of the URL:
+            url = self.request.URL
+            last_url_part = url.rsplit('/', 1)[1]
+            if last_url_part in auth_methods:
+                return True
+
+    def __call__(self):
+        if self.no_redirect:
+            return
+        else:
+            super(UnauthorizedRedirectView, self).__call__()
 
 
 class DummyView(object):
