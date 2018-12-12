@@ -52,14 +52,25 @@ class UnauthorizedRedirectView(RedirectView):
 
 
 class DummyView(object):
-    """We need this view to prohibit the re-raise of exceptions."""
+    """We need this view to prohibit the re-raise of exceptions.
+
+    In case no exception view is registered, the exception will be re-raised
+    and there will be no possibility to influence the body of the response.
+
+    see ZPublisher.WSGIPublisher.transaction_pubevents
+
+    """
 
     def __call__(self,):
         """Provide dummy callable."""
 
 
 class LoggingView(object):
-    """Log the error and traceback."""
+    """Log the error and traceback and render a standard error message."""
+
+    def __init__(self, context=None, request=None):
+        self.context = context
+        self.request = request
 
     def log_traceback(self):
         log.error('Logging internal server error on %s with UUID: %s',
@@ -70,22 +81,25 @@ class LoggingView(object):
     def uuid(self):
         return uuid4()
 
-    def __call__(self, request=None):
+    def __call__(self):
         """Log the error and render standard error message."""
-        if request is not None:
-            self.request = request
         self.log_traceback()
         root = self.request['PARENTS'][-1]
         if not hasattr(root, 'standard_error_message_show'):
             return ''
         std_err_mess = root.standard_error_message_show
         result = std_err_mess(uuid=self.uuid)
+        # Commit the results of our error handling procedure.
         transaction.commit()
         return result
 
 
 @zope.component.adapter(ZPublisher.interfaces.IPubFailure)
 def log_and_render_error_message(event):
-    """Combine logging and rendering"""
-    view = LoggingView()
-    event.request.response.setBody(view(request=event.request))
+    """Log and render exception view after an aborted transaction."""
+    # The transaction in which the exception was raised gets aborted just
+    # before IPubFailure, so we can safely commit a new one during our error
+    # handling procedure. This is also the reason, why we cannot use a logging
+    # view directly.
+    view = LoggingView(request=event.request)
+    event.request.response.setBody(view())
