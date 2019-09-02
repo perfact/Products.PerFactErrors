@@ -1,10 +1,11 @@
-import ZPublisher.interfaces
-import transaction
-import zope.component
 import logging
 import traceback
+import transaction
+import ZPublisher.interfaces
+import zope.component
 
 logger = logging.getLogger(__name__)
+
 
 @zope.component.adapter(ZPublisher.interfaces.IPubFailure)
 def standard_error_message(event):
@@ -15,7 +16,7 @@ def standard_error_message(event):
     # view directly.
     req = event.request
     context = req['PARENTS'][0]
-    render = getattr(context, 'standard_error_message', None)
+    render = getattr(context, 'perfact_error_handler', None)
     if render is None:
         return
     try:
@@ -31,8 +32,5 @@ def standard_error_message(event):
             logger.warn(item)
 
         transaction.abort()
-        render = getattr(context, 'standard_error_message_minimal', None)
-        if render is not None:
-            req.response.setBody(render())
-    else:
+    else:  # no exception
         transaction.commit()

@@ -10,7 +10,7 @@ setup(name='Products.PerFactErrors',
       # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
           "Environment :: Web Environment",
-          "Framework :: Zope :: 4",
+          "Framework :: Zope",
           "Intended Audience :: Developers",
           "License :: OSI Approved :: Zope Public License",
           "Operating System :: OS Independent",
@@ -36,13 +36,9 @@ setup(name='Products.PerFactErrors',
       zip_safe=False,
       namespace_packages=['Products'],
       install_requires=[
-          'Zope',
-          'zExceptions',
-          'zope.cachedescriptors',
           'zope.component',
           'zope.interface',
           'zope.publisher',
-          'zope.security',
       ],
       entry_points="""
       # -*- Entry points: -*-
