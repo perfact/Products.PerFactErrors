@@ -16,20 +16,21 @@ def standard_error_message(event):
     # view directly.
     req = event.request
     context = req['PARENTS'][0]
-    render = getattr(context, 'perfact_error_handler', None)
+    render = getattr(context, 'perfact_error_handler_', None)
     if render is None:
         return
     try:
-        exc = event.exc_info
-        req.response.setBody(render(
-            error_type=exc[0],
-            error_value=exc[1],
-            error_tb=exc[2],
-        ))
+        error_type, error_value, error_tb = event.exc_info
+        body = render(
+            error_type=error_type,
+            error_value=error_value,
+            error_tb=error_tb,
+        )
+        if body is not None:
+            req.response.setBody(body)
     except Exception:
         logger.warn('Error while rendering error message')
-        for item in traceback.format_tb():
-            logger.warn(item)
+        traceback.print_exc()
 
         transaction.abort()
     else:  # no exception
