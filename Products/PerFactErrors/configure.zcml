@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser">
 
-  <subscriber handler=".errors.standard_error_message" />
+  <subscriber handler=".errors.afterfail_error_message" />
 
 </configure>
