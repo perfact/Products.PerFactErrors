@@ -3,6 +3,7 @@ import traceback
 import transaction
 import ZPublisher.interfaces
 import zope.component
+import zExceptions.ExceptionFormatter
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,12 @@ def afterfail_error_message(event):
         return
     try:
         error_type, error_value, error_tb = event.exc_info
+        error_tb = '\n'.join(
+            zExceptions.ExceptionFormatter.format_exception(
+                error_type, error_value, error_tb,
+                as_html=True,
+            )
+        )
         # Inside a method inside Zope, we can handle a string better, so we
         # pass the __name__ as error_type
         body = render(
