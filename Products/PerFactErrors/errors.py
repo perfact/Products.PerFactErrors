@@ -40,9 +40,7 @@ def afterfail_error_message(event):
         if body is not None:
             req.response.setBody(body)
     except Exception:
-        logger.warn('Error while rendering error message')
-        traceback.print_exc()
-
+        logger.exception('Error while rendering error message')
         transaction.abort()
     else:  # no exception
         transaction.commit()
