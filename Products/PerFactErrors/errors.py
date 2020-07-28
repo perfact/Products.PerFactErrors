@@ -1,3 +1,4 @@
+import six
 import logging
 import traceback
 import transaction
@@ -24,6 +25,14 @@ def afterfail_error_message(event):
         return
     try:
         error_type, error_value, error_tb = event.exc_info
+        if six.PY3:
+            # Actually, the test should be for "Are we using WSGI", not "Are we
+            # using Python 3". Not sure how to test that.
+
+            # With WSGI, the error traceback itself no longer is printed to the
+            # event.log, so we do that manually
+            logger.exception(error_value)
+
         error_tb = '\n'.join(
             zExceptions.ExceptionFormatter.format_exception(
                 error_type, error_value, error_tb,
