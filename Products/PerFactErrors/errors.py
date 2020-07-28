@@ -30,9 +30,6 @@ def afterfail_error_message(event):
     try:
         error_type, error_value, error_tb = event.exc_info
         if isinstance(req, WSGIRequest):
-            # Actually, the test should be for "Are we using WSGI", not "Are we
-            # using Python 3". Not sure how to test that.
-
             # With WSGI, the error traceback itself no longer is printed to the
             # event.log, so we do that manually
             logger.exception(error_value)
