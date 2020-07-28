@@ -6,6 +6,12 @@ import ZPublisher.interfaces
 import zope.component
 import zExceptions.ExceptionFormatter
 
+try:
+    from ZPublisher.HTTPRequest import WSGIRequest
+except ImportError:
+    class WSGIRequest():
+        pass
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,7 +31,7 @@ def afterfail_error_message(event):
         return
     try:
         error_type, error_value, error_tb = event.exc_info
-        if six.PY3:
+        if isinstance(req, WSGIRequest):
             # Actually, the test should be for "Are we using WSGI", not "Are we
             # using Python 3". Not sure how to test that.
 
