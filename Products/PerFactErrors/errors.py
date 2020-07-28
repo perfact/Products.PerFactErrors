@@ -1,6 +1,4 @@
-import six
 import logging
-import traceback
 import transaction
 import ZPublisher.interfaces
 import zope.component
