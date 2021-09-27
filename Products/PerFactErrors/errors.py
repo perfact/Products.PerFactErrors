@@ -3,6 +3,7 @@ import transaction
 import ZPublisher.interfaces
 import zope.component
 import zExceptions.ExceptionFormatter
+from zExceptions import Unauthorized
 
 try:
     from ZPublisher.HTTPRequest import WSGIRequest
@@ -29,9 +30,17 @@ def afterfail_error_message(event):
         return
     try:
         error_type, error_value, error_tb = event.exc_info
-        if isinstance(req, WSGIRequest):
-            # With WSGI, the error traceback itself no longer is printed to the
-            # event.log, so we do that manually
+        # With WSGI, the error traceback itself no longer is printed to the
+        # event.log, so we do that manually - except for special cases
+        log_error = (
+            isinstance(req, WSGIRequest)
+            and not isinstance(error_value, Unauthorized)
+            and not (
+                isinstance(error_value, PerFactException)
+                and not error_value.apperrorlog
+            )
+        )
+        if log_error:
             logger.exception(error_value)
 
         error_tb = '\n'.join(
