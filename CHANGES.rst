@@ -1,3 +1,9 @@
+0.8
+===
+
+- Reduce overly verbose error output that is added by Chameleon if an error
+  occurs in a Page Template
+
 0.7
 ===
 

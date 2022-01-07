@@ -4,6 +4,7 @@ import ZPublisher.interfaces
 import zope.component
 import zExceptions.ExceptionFormatter
 from zExceptions import Unauthorized
+from zope.pagetemplate.pagetemplate import PTRuntimeError
 
 try:
     from ZPublisher.HTTPRequest import WSGIRequest
@@ -49,6 +50,19 @@ def afterfail_error_message(event):
                 as_html=True,
             )
         )
+
+        # Chameleon adds some traceback information to the error_value's
+        # __str__ method, which we do not want to show the user, so we replace
+        # the error value by its original string representation. Information
+        # like the exact line and expression in the page template can still be
+        # found in the event.log and in the traceback.
+        if hasattr(error_value, '_original__str__'):
+            error_value = error_value._original__str__()
+
+        # Chameleon's own errors are also too verbose
+        if isinstance(error_value, PTRuntimeError):
+            error_value = 'Error parsing page template'
+
         # Inside a method inside Zope, we can handle a string better, so we
         # pass the __name__ as error_type
         body = render(
