@@ -129,6 +129,10 @@ class PerFactUserWarning(PerFactException):
     '''
 
     def __init__(self, msg='', payload=None, **kw):
+
+        if 'apperrorlog' in kw:
+            del kw['apperrorlog']
+
         super(PerFactUserWarning, self).__init__(
             msg=msg, show_to_user=True,
             apperrorlog=False, payload=payload, **kw)
