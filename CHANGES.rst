@@ -1,3 +1,11 @@
+22.2.0
+======
+
+- Fix parameter in ``PerFactUserWarning`` so these are not included in the
+  error log.
+
+- Adjust version numbering
+
 0.8
 ===
 

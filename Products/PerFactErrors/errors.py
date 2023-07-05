@@ -131,4 +131,4 @@ class PerFactUserWarning(PerFactException):
     def __init__(self, msg='', payload=None, **kw):
         super(PerFactUserWarning, self).__init__(
             msg=msg, show_to_user=True,
-            appuserlog=False, payload=payload, **kw)
+            apperrorlog=False, payload=payload, **kw)
