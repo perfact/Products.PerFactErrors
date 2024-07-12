@@ -56,9 +56,11 @@ def afterfail_error_message(event):
         # the error value by its original string representation. Information
         # like the exact line and expression in the page template can still be
         # found in the event.log and in the traceback.
-        if hasattr(error_value, '_original__str__')  and not isinstance(error_value, PerFactException):
+        if (
+            hasattr(error_value, '_original__str__')
+            and not isinstance(error_value, PerFactException)
+        ):
             error_value = error_value._original__str__()
-            logger.exception()
 
 
         # Chameleon's own errors are also too verbose
