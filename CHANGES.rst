@@ -1,7 +1,7 @@
 22.3.0
 ======
 
-- Fix ``PerFactException`` handling for charmeleon-based page templates.
+- Fix ``PerFactException`` handling for Chameleon-based page templates.
 
 - Adjust version numbering
 

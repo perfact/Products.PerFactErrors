@@ -62,7 +62,6 @@ def afterfail_error_message(event):
         ):
             error_value = error_value._original__str__()
 
-
         # Chameleon's own errors are also too verbose
         if isinstance(error_value, PTRuntimeError):
             error_value = 'Error parsing page template'
