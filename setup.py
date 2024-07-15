@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '22.2.0'
+version = '22.3.0'
 
 setup(name='Products.PerFactErrors',
       version=version,
