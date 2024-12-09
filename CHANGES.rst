@@ -1,3 +1,9 @@
+23.1.0
+======
+
+- Also render exception causes according to 
+  [PEP 3134](https://peps.python.org/pep-3134/#explicit-exception-chaining)
+
 23.0.0
 ======
 
