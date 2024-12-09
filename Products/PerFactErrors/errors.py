@@ -44,12 +44,31 @@ def afterfail_error_message(event):
         if log_error:
             logger.exception(error_value)
 
-        error_tb = '\n'.join(
+        tracebacks = []
+        tracebacks.append('\n'.join(
             zExceptions.ExceptionFormatter.format_exception(
                 error_type, error_value, error_tb,
                 as_html=True,
             )
-        )
+        ))
+
+        cause = error_value.__cause__
+        while cause:
+            tracebacks.append('\n'.join(
+                zExceptions.ExceptionFormatter.format_exception(
+                    type(cause),
+                    cause,
+                    cause.__traceback__,
+                    as_html=True,
+                )
+            ))
+            cause = cause.__cause__
+
+        tracebacks.reverse()
+        error_tb = (
+            'The above exception was the '
+            'direct cause of the following exception:\n'
+        ).join(tracebacks)
 
         # Chameleon adds some traceback information to the error_value's
         # __str__ method, which we do not want to show the user, so we replace
