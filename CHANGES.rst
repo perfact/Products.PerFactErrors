@@ -1,3 +1,10 @@
+23.2.0
+======
+
+- Modify the ``PerFactException`` parameter apperrorlog's default behavior.
+  If not specifically deactivated, the exception will then trigger logging 
+  into the related error log.
+
 23.1.0
 ======
 
