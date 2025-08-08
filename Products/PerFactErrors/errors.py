@@ -110,7 +110,7 @@ class PerFactException(Exception):
     '''
 
     def __init__(self, msg='', show_to_user=False,
-                 apperrorlog=False, payload=None, **kw):
+                 apperrorlog=True, payload=None, **kw):
         '''
         Input:
         - "msg" (string) is the error message,
