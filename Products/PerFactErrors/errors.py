@@ -31,7 +31,7 @@ def afterfail_error_message(event):
         error_type, error_value, error_tb = event.exc_info
         render = getattr(context, 'afterfail_error_message_', None)
         retry = isinstance(error_value, TransientError) and req.supports_retry()
-        if render is None and not retry:
+        if render is None or retry:
             return
 
         # With WSGI, the error traceback itself no longer is printed to the
