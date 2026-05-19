@@ -140,9 +140,14 @@ class PerFactException(Exception):
         self.show_to_user = show_to_user
         self.apperrorlog = apperrorlog
         self.payload = payload or {}
+        self.__status_code__ = 500
 
     def __str__(self):
         return repr((self.msg, self.payload))
+
+    @property
+    def status_code(self):
+        return self.__status_code__
 
 
 class PerFactUserWarning(PerFactException):
@@ -157,3 +162,4 @@ class PerFactUserWarning(PerFactException):
         super(PerFactUserWarning, self).__init__(
             msg=msg, show_to_user=True,
             apperrorlog=False, payload=payload, **kw)
+        self.__status_code__ = 422  # Unprocessable Entity
