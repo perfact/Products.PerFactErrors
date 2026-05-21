@@ -1,3 +1,9 @@
+23.3.0
+======
+
+- Modify the ``afterfail_error_message`` to skip error logging
+  if the Zope request will be retried (by Zope automatically)
+
 23.2.0
 ======
 

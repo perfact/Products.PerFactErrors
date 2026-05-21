@@ -5,6 +5,7 @@ import zope.component
 import zExceptions.ExceptionFormatter
 from zExceptions import Unauthorized
 from zope.pagetemplate.pagetemplate import PTRuntimeError
+from transaction.interfaces import TransientError
 
 try:
     from ZPublisher.HTTPRequest import WSGIRequest
@@ -26,11 +27,13 @@ def afterfail_error_message(event):
     """
     req = event.request
     context = req['PARENTS'][0]
-    render = getattr(context, 'afterfail_error_message_', None)
-    if render is None:
-        return
     try:
         error_type, error_value, error_tb = event.exc_info
+        render = getattr(context, 'afterfail_error_message_', None)
+        retry = isinstance(error_value, TransientError) and req.supports_retry()
+        if render is None or retry:
+            return
+
         # With WSGI, the error traceback itself no longer is printed to the
         # event.log, so we do that manually - except for special cases
         log_error = (
