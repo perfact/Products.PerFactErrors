@@ -1,3 +1,10 @@
+23.4.0
+======
+
+- Add readonly property ``status_code`` to ``PerFactException`` classes.
+  This will be set only within constructer (for now) and can be used within
+  exception handling to define the actual returning status code.
+
 23.3.0
 ======
 
